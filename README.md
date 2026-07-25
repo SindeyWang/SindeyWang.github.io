@@ -1,17 +1,17 @@
-# Kongxin Wang Personal Homepage v0.1
+# Kongxin Wang Personal Homepage v0.2
 
-Static GitHub Pages website for kongxinwang.com.
+Static bilingual GitHub Pages homepage for Kongxin Wang.
 
-## Structure
+## Features
 
-- `index.html` — homepage
-- `projects.html` — selected projects
-- `experience.html` — education, skills, experience placeholders
-- `cv.html` — CV placeholder
-- `contact.html` — contact and links
-- `style.css` — responsive academic/professional visual style
-- `CNAME` — custom domain placeholder for `kongxinwang.com`
+- English / Chinese language toggle
+- Professional portrait
+- CV PDF download
+- Project, experience, CV and contact pages
+- Responsive desktop/mobile layout
 
-## v0.1 Notes
+## Deployment
 
-This first version uses the public GitHub avatar as a temporary portrait and placeholder copy for CV/email/LinkedIn until final materials are provided.
+Current preview URL: <https://sindeywang.github.io/>
+
+The `CNAME` file is intentionally not included in v0.2 so the GitHub Pages preview URL remains usable before `kongxinwang.com` DNS is switched away from Notion/Fruition.
