@@ -132,6 +132,7 @@ h3 { font-size: 1.2rem; margin-bottom: 9px; }
 .project-content .tag-row { margin-top: 25px; }
 
 .cv-panel { padding: 34px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); }
+.resume-actions { display: flex; flex-wrap: wrap; gap: 13px; }
 .cv-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 37px; background: var(--line); border: 1px solid var(--line); }
 .cv-summary article { padding: 26px; background: var(--surface); }
 .cv-summary .eyebrow { margin-bottom: 28px; }
@@ -178,7 +179,7 @@ footer a { color: var(--navy); }
   .hero { padding-top: 34px; gap: 22px; }
   .portrait-card { width: min(240px, 70vw); }
   .portrait-card figcaption { margin-top: 10px; padding: 9px 11px; }
-  .hero-actions, .hero-actions .button { width: 100%; }
+  .hero-actions, .hero-actions .button, .resume-actions, .resume-actions .button { width: 100%; }
   .experience-topline, .education-row { flex-direction: column; gap: 4px; }
   .period { white-space: normal; }
   .experience-card, .timeline-item, .cv-panel { padding: 22px; }

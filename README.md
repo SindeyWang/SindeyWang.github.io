@@ -7,7 +7,16 @@ Static bilingual personal website for Kongxin Wang, deployed through GitHub Page
 - Chinese characters use a Songti-first local font stack; English and numerals use Times New Roman first, with safe system fallbacks.
 - English and Chinese are parallel, but translations are edited for meaning rather than mechanically mirrored word by word.
 - Only public, confirmed professional responsibilities and outcomes belong in the website. Do not add internal commercial data, account information, store identities, SKU-level data, inventory, sales figures, rankings, enforcement outcomes, passwords, tokens or API keys.
-- The current résumé PDF is kept at `assets/cv/Kongxin_Wang_Resume.pdf`.
+- The résumé PDF assets are kept at `assets/cv/Kongxin_Wang_Resume_EN.pdf` and `assets/cv/Kongxin_Wang_Resume_ZH.pdf`; `Kongxin_Wang_Resume.pdf` is maintained as a compatibility copy of the current English résumé.
+- The site deliberately contains no analytics script, cookie banner or third-party tracking pixel.
+
+## Discoverability and sharing
+
+- `robots.txt` permits public crawling and declares the canonical sitemap.
+- `sitemap.xml` lists the five canonical public pages.
+- The homepage carries minimal `Person` JSON-LD: public name, public profile links, university, website image and professional topics only.
+- Every public page uses the dedicated `assets/og-kongxin-wang.jpg` social preview image (1200 × 630) with Open Graph and Twitter image metadata.
+- The PDF templates and the reproducible sharing-image script are kept in `tools/p2/`; they contain only information already approved for publication.
 
 ## Local preview
 
