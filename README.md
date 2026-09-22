@@ -1,17 +1,25 @@
-# Kongxin Wang Personal Homepage v0.2
+# Kongxin Wang Personal Website
 
-Static bilingual GitHub Pages homepage for Kongxin Wang.
+Static bilingual personal website for Kongxin Wang, deployed through GitHub Pages with the custom domain <https://kongxinwang.com>.
 
-## Features
+## Content and design principles
 
-- English / Chinese language toggle
-- Professional portrait
-- CV PDF download
-- Project, experience, CV and contact pages
-- Responsive desktop/mobile layout
+- Chinese characters use a Songti-first local font stack; English and numerals use Times New Roman first, with safe system fallbacks.
+- English and Chinese are parallel, but translations are edited for meaning rather than mechanically mirrored word by word.
+- Only public, confirmed professional responsibilities and outcomes belong in the website. Do not add internal commercial data, account information, store identities, SKU-level data, inventory, sales figures, rankings, enforcement outcomes, passwords, tokens or API keys.
+- The current résumé PDF is kept at `assets/cv/Kongxin_Wang_Resume.pdf`.
 
-## Deployment
+## Local preview
 
-Current preview URL: <https://sindeywang.github.io/>
+```bash
+python3 -m http.server 4173
+```
 
-The `CNAME` file is intentionally not included in v0.2 so the GitHub Pages preview URL remains usable before `kongxinwang.com` DNS is switched away from Notion/Fruition.
+Then open <http://127.0.0.1:4173>.
+
+## Publishing workflow
+
+1. Create a feature branch from current `main`.
+2. Validate HTML structure, JavaScript syntax, internal assets, desktop/mobile layouts and bilingual toggle locally.
+3. Commit the reviewed change; push and merge only after checks pass.
+4. Verify the published `https://kongxinwang.com` pages, canonical URLs and key assets after GitHub Pages deployment.
