@@ -39,6 +39,8 @@
   const translations = {
     en: {
       title: 'Cookie settings', intro: 'Necessary local storage remembers your language and cookie choices. Optional analytics and marketing are off until you choose. You can change or withdraw consent here at any time.',
+      bannerIntro: 'Optional analytics and marketing are off until you choose.',
+      bannerIntroAnalytics: 'Optional visit analytics is off until you choose. No advertising tags are enabled.',
       introAnalytics: 'Necessary local storage remembers your language and cookie choices. Optional GA4 analytics is off until you choose. Advertising and marketing tags are not enabled. You can change or withdraw consent here at any time.',
       disabled: 'Analytics and marketing are not enabled on this site. Only necessary language and consent storage is used; no analytics or advertising tag is loaded.',
       forced: 'Your browser privacy signal (Do Not Track or Global Privacy Control) is respected. Analytics and marketing remain off.',
@@ -49,6 +51,8 @@
     },
     zh: {
       title: 'Cookie 设置', intro: '必要的本地存储用于记住语言及 Cookie 选择。可选的分析与营销在你选择前均关闭。你可随时在此更改或撤回同意。',
+      bannerIntro: '可选分析与营销默认关闭，由你决定是否允许。',
+      bannerIntroAnalytics: '可选访问统计默认关闭，由你决定是否允许；本站未启用广告标签。',
       introAnalytics: '必要的本地存储用于记住语言及 Cookie 选择。可选 GA4 分析在你选择前保持关闭，广告与营销标签未启用。你可随时在此更改或撤回同意。',
       disabled: '本站尚未启用分析或营销。目前仅使用必要的语言与同意设置存储，不加载分析或广告标签。',
       forced: '已尊重浏览器的隐私信号（Do Not Track 或 Global Privacy Control）。分析与营销保持关闭。',
@@ -277,7 +281,7 @@
       render();
     }
   }
-  function text() { const t = translations[language()]; return marketingConfigured ? t : { ...t, intro: t.introAnalytics }; }
+  function text() { const t = translations[language()]; return marketingConfigured ? t : { ...t, intro: t.introAnalytics, bannerIntro: t.bannerIntroAnalytics }; }
   function explanation() {
     const t = text();
     return !configured ? t.disabled : privacyForced() ? t.forced : !storageAvailable ? t.storage : t.intro;
@@ -367,6 +371,7 @@
     initialized = true;
     const styles = element('style');
     styles.textContent = '.kw-consent-banner,.kw-consent-dialog{font-family:var(--serif-mixed,"Times New Roman",STSong,SimSun,serif);color:var(--ink,#172033);background:#fff;border:1px solid var(--line,#d9deea);padding:24px;box-sizing:border-box}.kw-consent-banner{position:fixed;bottom:16px;left:16px;right:16px;z-index:60;max-height:75vh;overflow:auto;box-shadow:0 8px 40px #17203326}.kw-consent-dialog{position:fixed;inset:0;margin:auto;width:min(640px,calc(100% - 32px));max-height:85vh;overflow:auto;z-index:100;box-shadow:0 10px 60px #17203340}.kw-consent-dialog::backdrop{background:#17203370}.kw-consent-dialog[open]{display:block}.kw-consent-dialog[hidden],.kw-consent-banner[hidden],.kw-consent-dialog [hidden]{display:none!important}.kw-consent-actions{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0}.kw-consent-actions .kw-consent-button{flex:1 1 140px}.kw-consent-button{font:inherit;min-height:44px;padding:8px 14px;color:var(--navy,#0b3d91);background:#fff;border:1px solid var(--navy,#0b3d91);cursor:pointer}.kw-consent-button:hover{background:var(--surface-soft,#f5f7fb)}.kw-consent-dialog h2,.kw-consent-banner h2{font-size:1.6rem}.kw-consent-dialog label{display:flex;gap:12px;align-items:baseline;margin:16px 0}.kw-consent-dialog input{width:18px;height:18px;flex-shrink:0}.kw-consent-dialog :focus-visible,.kw-consent-banner :focus-visible{outline:3px solid #a87510;outline-offset:3px}';
+    styles.textContent += '.kw-consent-banner{padding:16px 20px}.kw-consent-banner h2{font-size:1.15rem;line-height:1.2;margin-bottom:8px}.kw-consent-banner p{margin-bottom:8px}.kw-consent-banner .kw-consent-actions{margin:10px 0;gap:8px}.kw-consent-banner .kw-consent-button{flex:1 1 0;min-width:0;padding:6px 8px}';
     styles.textContent += '.kw-consent-backdrop{position:fixed;inset:0;background:#17203370;z-index:99}.kw-consent-backdrop[hidden]{display:none!important}';
     document.head.appendChild(styles);
     backdrop = element('div', 'kw-consent-backdrop'); backdrop.hidden = true;
@@ -409,7 +414,7 @@
     // Disabled/unconfigured/privacy-forced sites do not pretend to collect data.
     if (configured && !privacyForced()) {
       banner = element('section', 'kw-consent-banner'); banner.setAttribute('aria-label', text().title);
-      banner.append(copied('h2', 'title'), copied('p', 'intro'));
+      banner.append(copied('h2', 'title'), copied('p', 'bannerIntro'));
       const bannerActions = element('div', 'kw-consent-actions');
       choiceButtons(bannerActions, event => openDialog(event.currentTarget));
       banner.appendChild(bannerActions);

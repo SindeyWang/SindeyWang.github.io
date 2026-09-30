@@ -36,6 +36,8 @@ def run(browser,name,action,signal=None):
  page.goto(BASE+'/privacy.html?probe='+MARKER+'#'+MARKER,wait_until='networkidle')
  page.wait_for_function('Boolean(window.KWConsent)')
  assert not external,external
+ if page.locator('.kw-consent-banner').is_visible():
+  assert page.locator('.kw-consent-banner').bounding_box()['height'] <= 280,'Initial mobile notice dominates the viewport'
  action(page,ctx,external,collect,statuses)
  assert not errors,errors
  serialized=json.dumps(external,ensure_ascii=False)
