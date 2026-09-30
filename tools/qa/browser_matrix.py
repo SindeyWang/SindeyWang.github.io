@@ -1,23 +1,24 @@
 """Bounded browser QA; reports and screenshots stay out of public site."""
 from pathlib import Path
 from urllib.parse import urlparse,unquote
-import json,xml.etree.ElementTree as ET
+import json,os,shutil,xml.etree.ElementTree as ET
 from playwright.sync_api import sync_playwright
-ROOT=Path('/home/ubuntu/kongxinwang-site-quality-20260930')
-OUT=Path('/home/ubuntu/.hermes/artifacts/site-quality-20260930');OUT.mkdir(parents=True,exist_ok=True)
-BASE='http://127.0.0.1:18763/'
+ROOT=Path(__file__).resolve().parents[2]
+OUT=Path(os.environ.get('KW_QA_REPORT_DIR',str(Path.home()/'.hermes/artifacts/site-quality-latest')));OUT.mkdir(parents=True,exist_ok=True)
+BASE=os.environ.get('KW_PREVIEW_URL','http://127.0.0.1:18763/').rstrip('/')+'/'
+ALLOWED_HOST=urlparse(BASE).hostname
 PAGES=['index.html','projects.html','experience.html','cv.html','contact.html','privacy.html','404.html']
 rows=[]; failures=[]; errors=[]; external=[]; axe_rows=[]
-axe=Path('/tmp/kw-site-axe-4.10.3.js').read_text()
+axe=Path(os.environ.get('KW_AXE_JS','/tmp/kw-site-axe-4.10.3.js')).read_text()
 with sync_playwright() as p:
- browser=p.chromium.launch(executable_path='/usr/bin/chromium-browser',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
+ browser=p.chromium.launch(executable_path=os.environ.get('KW_CHROMIUM_PATH',shutil.which('chromium-browser') or shutil.which('chromium') or 'chromium'),headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  for width in [320,390,768,1440]:
   for lang in ['en','zh']:
    ctx=browser.new_context(viewport={'width':width,'height':900})
    ctx.add_init_script(f"localStorage.setItem('kw_lang','{lang}')")
    for name in PAGES:
     page=ctx.new_page();page.on('pageerror',lambda e: errors.append(str(e)))
-    page.on('request',lambda r: external.append(r.url) if urlparse(r.url).hostname not in ['127.0.0.1','localhost',None] else None)
+    page.on('request',lambda r: external.append(r.url) if urlparse(r.url).hostname not in [ALLOWED_HOST,None] else None)
     page.goto(BASE+name,wait_until='load')
     if name=='projects.html':
      for item in page.locator('details.case-note summary').all(): item.click()

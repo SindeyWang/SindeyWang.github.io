@@ -10,6 +10,18 @@ const ROOT = path.resolve(__dirname, '../..');
 function harness(options = {}) {
   const handlers = {}, winHandlers = {}, nodes = [], cookies = [], redirects = [], storage = new Map();
   if (options.stored !== undefined) storage.set('kw_consent', options.stored);
+  const clock = {now: options.now ?? Date.now()}, timers = new Map();
+  let nextTimer = 0;
+  const advance = ms => {
+    const target = clock.now + ms; let count = 0;
+    while (true) {
+      const next = [...timers.entries()].sort((a,b) => a[1].due-b[1].due)[0];
+      if (!next || next[1].due > target) break;
+      assert.ok(++count < 32, 'timer scheduler must converge');
+      clock.now = next[1].due; timers.delete(next[0]); next[1].fn();
+    }
+    clock.now = target;
+  };
   class Element {
     constructor(tag) { this.tagName = tag.toUpperCase(); this.children = []; this.attrs = {}; this.style = {}; this.listeners = {}; this.hidden = false; this.open = false; this.checked = false; this.disabled = false; this.isConnected = true; }
     appendChild(el) { this.children.push(el); nodes.push(el); el.parentNode = this; return el; }
@@ -48,7 +60,9 @@ function harness(options = {}) {
     KW_ANALYTICS: options.config || {enabled: true, gtmId: 'GTM-TEST123'},
     addEventListener: (k, fn) => (winHandlers[k] ||= []).push(fn),
     dispatchEvent: e => (winHandlers[e.type] || []).forEach(fn => fn(e)),
-    setTimeout: () => 1, clearTimeout: () => {}, CustomEvent: class {constructor(type, init) {this.type=type; this.detail=init?.detail;}}, URL
+    Date: class extends Date {static now() { return clock.now; }},
+    setTimeout: (fn,ms) => { const id=++nextTimer; timers.set(id,{fn,due:clock.now+Math.max(Number(ms)||0,0)}); return id; },
+    clearTimeout: id => timers.delete(id), CustomEvent: class {constructor(type, init) {this.type=type; this.detail=init?.detail;}}, URL
   };
   window.window = window;
   const context = vm.createContext({...window, window, document, location, navigator: window.navigator, localStorage: window.localStorage, console});
@@ -56,7 +70,7 @@ function harness(options = {}) {
   vm.runInContext(source, context, {filename: 'consent.js'});
   const dispatch = (type, detail = {}) => (handlers[type] || []).forEach(fn => fn({type, detail, ...detail, preventDefault() {this.defaultPrevented = true;}}));
   const click = label => { const el = nodes.find(el => el.tagName === 'BUTTON' && el.textContent === label && !el.closest('[hidden]')); assert.ok(el, `button ${label} exists`); el.dispatchEvent({type:'click', preventDefault(){}}); };
-  return {window, document, nodes, storage, cookies, redirects, api: window.KWConsent, dispatch, click,
+  return {window, document, nodes, storage, cookies, redirects, clock, timers, advance, api: window.KWConsent, dispatch, click,
     scripts: () => nodes.filter(el => el.tagName === 'SCRIPT'),
     events: () => (window.dataLayer || []).filter(el => el.event && el.event !== 'gtm.js')};
 }
@@ -283,4 +297,39 @@ test('Escape closes dialog, returns focus and grants nothing', () => {
   assert.equal(d.open,false);
   assert.equal(h.document.activeElement,opener);
   assert.equal(h.scripts().length,0);
+});
+
+
+test('a stored grant expires while the page remains open without user activity', () => {
+  const now = Date.now();
+  const h = harness({now, stored: storedConsent(true,false,{updatedAt:now,expiresAt:now+500})});
+  assert.equal(h.api.getState().analytics, true);
+  h.advance(499);
+  assert.equal(h.api.getState().analytics, true);
+  assert.equal(h.redirects.length, 0);
+  h.advance(1);
+  assert.equal(h.api.getState().analytics, false);
+  assert.equal(h.api.getState().marketing, false);
+  assert.deepEqual(h.redirects, ['/projects.html']);
+  assert.ok(h.cookies.some(c => c.startsWith('_ga=')));
+});
+
+test('180-day consent is scheduled in safe timeout chunks and revoked at expiry', () => {
+  const now = Date.now(), ttl = 180 * 86400000;
+  const h = harness({now});
+  h.click('Accept all');
+  assert.equal([...h.timers.values()][0].due-now, 2147483647);
+  h.advance(ttl-1);
+  assert.equal(h.api.getState().analytics, true);
+  assert.equal(h.redirects.length, 0);
+  assert.equal(h.scripts().length, 1);
+  h.advance(1);
+  assert.equal(h.api.getState().analytics, false);
+  assert.equal(h.api.getState().marketing, false);
+  assert.equal(h.redirects.length, 1);
+  const command = h.window.dataLayer.at(-1);
+  assert.equal(command[0], 'consent');
+  assert.equal(command[1], 'update');
+  assert.equal(command[2].analytics_storage, 'denied');
+  assert.equal(command[2].ad_storage, 'denied');
 });
