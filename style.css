@@ -1,8 +1,33 @@
+/* Use installed fonts only. Unicode-scoped aliases prevent Chinese font
+   selection from changing English letters and ASCII numerals in mixed copy.
+   Windows: SimSun + Times New Roman. Other systems: local Songti/serif fallback.
+   No proprietary font files or external font services are distributed. */
+@font-face {
+  font-family: "KW Latin";
+  src: local("Times New Roman");
+  font-style: normal;
+  font-weight: 400;
+  unicode-range: U+0000-024F, U+1E00-1EFF, U+2000-206F, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2212;
+}
+@font-face {
+  font-family: "KW Latin";
+  src: local("Times New Roman Bold");
+  font-style: normal;
+  font-weight: 700;
+  unicode-range: U+0000-024F, U+1E00-1EFF, U+2000-206F, U+20A0-20CF, U+2100-214F, U+2190-21FF, U+2212;
+}
+@font-face {
+  font-family: "KW Chinese";
+  src: local("SimSun"), local("宋体"), local("Songti SC"), local("STSong"), local("Noto Serif CJK SC");
+  font-style: normal;
+  font-weight: 400;
+  unicode-range: U+2E80-9FFF, U+F900-FAFF, U+FE30-FE4F, U+FF01-FF0F, U+FF1A-FF20, U+FF3B-FF40, U+FF5B-FFEF, U+20000-3134F;
+}
 :root {
   --ink: #172033; --muted: #515e6b; --navy: #123f63; --navy-deep: #102d43;
   --gold: #855b16; --line: #d8ddd9; --surface: #fff; --surface-soft: #f4f6f5;
   --shadow: 0 16px 48px rgba(17,40,53,.07);
-  --serif-mixed: "Times New Roman", Times, "Songti SC", STSong, SimSun, "Noto Serif CJK SC", serif;
+  --serif-mixed: "KW Latin", "KW Chinese", "Times New Roman", Times, SimSun, "Songti SC", STSong, "Noto Serif CJK SC", serif;
   --measure: 65ch; --ease: cubic-bezier(.22,.68,0,1);
 }
 * { box-sizing: border-box; }

@@ -28,6 +28,7 @@
     document.title = root.dataset[isZh ? 'titleZh' : 'titleEn'] || document.title;
     langBtn?.setAttribute('aria-label', isZh ? 'Switch to English' : '切换至中文');
     navBtn?.setAttribute('aria-label', isZh ? '打开导航菜单' : 'Open navigation');
+    if (navBtn) navBtn.textContent = isZh ? '菜单' : 'Menu';
     updateFilterStatus();
     window.dispatchEvent(new CustomEvent('kw:languagechange', {detail: {language: isZh ? 'zh' : 'en'}}));
     if (persist) { try { localStorage.setItem('kw_lang', isZh ? 'zh' : 'en'); } catch {} }

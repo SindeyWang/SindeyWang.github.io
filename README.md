@@ -8,12 +8,12 @@ Static bilingual personal website for Kongxin Wang, deployed through GitHub Page
 - English and Chinese are parallel, but translations are edited for meaning rather than mechanically mirrored word by word.
 - Only public, confirmed professional responsibilities and outcomes belong in the website. Do not add internal commercial data, account information, store identities, SKU-level data, inventory, sales figures, rankings, enforcement outcomes, passwords, tokens or API keys.
 - The résumé PDF assets are kept at `assets/cv/Kongxin_Wang_Resume_EN.pdf` and `assets/cv/Kongxin_Wang_Resume_ZH.pdf`; `Kongxin_Wang_Resume.pdf` is maintained as a compatibility copy of the current English résumé.
-- The site deliberately contains no analytics script, cookie banner or third-party tracking pixel.
+- Optional GA4-through-GTM analytics remains disabled in `analytics-config.js` until a real container, its consent gates, and live GA4 receipt are verified. No provider tracking script or advertising pixel loads in the disabled state. The bilingual Cookie settings dialog still explains necessary local storage.
 
 ## Discoverability and sharing
 
 - `robots.txt` permits public crawling and declares the canonical sitemap.
-- `sitemap.xml` lists the five canonical public pages.
+- `sitemap.xml` lists the six canonical public pages, including the privacy page; `404.html` is noindex and developer templates under `/tools/` are excluded from crawling.
 - The homepage carries minimal `Person` JSON-LD: public name, public profile links, university, website image and professional topics only.
 - Every public page uses the dedicated `assets/og-kongxin-wang.jpg` social preview image (1200 × 630) with Open Graph and Twitter image metadata.
 - The PDF templates and the reproducible sharing-image script are kept in `tools/p2/`; they contain only information already approved for publication.
@@ -21,7 +21,7 @@ Static bilingual personal website for Kongxin Wang, deployed through GitHub Page
 ## Local preview
 
 ```bash
-python3 -m http.server 4173
+python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
 Then open <http://127.0.0.1:4173>.
