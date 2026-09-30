@@ -20,20 +20,21 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://kongxinwang.com/assets/og-kongxin-wang.jpg">
   <meta name="twitter:image:alt" content="Kongxin Wang — Financial Mathematics and Data Analytics">
-  <meta name="theme-color" content="#0B3D91">
+  <meta name="theme-color" content="#123f63">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <script>document.documentElement.classList.add((()=>{try{return localStorage.getItem('kw_lang')==='zh'?'lang-zh':'lang-en'}catch(e){return'lang-en'}})());</script>
+  <script>document.documentElement.classList.add('js');(()=>{let l='en';try{l=localStorage.getItem('kw_lang')==='zh'?'zh':'en'}catch{}const r=document.documentElement;r.classList.toggle('lang-en',l==='en');r.classList.toggle('lang-zh',l==='zh');r.lang=l==='zh'?'zh-CN':'en'})();</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content"><span class="lang-en" lang="en">Skip to content</span><span class="lang-zh" lang="zh-CN">跳至正文</span></a>
   <header class="top-header">
     <a class="logo" href="index.html" aria-label="Kongxin Wang home"><span class="lang-en" lang="en">Kongxin Wang</span><span class="lang-zh" lang="zh-CN">王孔鑫</span></a>
     <button class="nav-toggle" type="button" aria-label="Open navigation" aria-controls="site-navigation" aria-expanded="false">Menu</button>
     <nav class="top-nav" id="site-navigation" aria-label="Primary navigation">
-      <a href="index.html"><span class="lang-en" lang="en">Home</span><span class="lang-zh" lang="zh-CN">首页</span></a><a href="projects.html"><span class="lang-en" lang="en">Projects</span><span class="lang-zh" lang="zh-CN">项目</span></a><a href="experience.html" class="active"><span class="lang-en" lang="en">Experience</span><span class="lang-zh" lang="zh-CN">经历</span></a><a href="cv.html"><span class="lang-en" lang="en">CV</span><span class="lang-zh" lang="zh-CN">简历</span></a><a href="contact.html"><span class="lang-en" lang="en">Contact</span><span class="lang-zh" lang="zh-CN">联系</span></a><button class="lang-toggle" type="button" aria-label="切换至中文"><span class="lang-en" lang="en">中文</span><span class="lang-zh" lang="zh-CN">EN</span></button>
+      <a href="index.html"><span class="lang-en" lang="en">Home</span><span class="lang-zh" lang="zh-CN">首页</span></a><a href="projects.html"><span class="lang-en" lang="en">Projects</span><span class="lang-zh" lang="zh-CN">项目</span></a><a href="experience.html" class="active" aria-current="page"><span class="lang-en" lang="en">Experience</span><span class="lang-zh" lang="zh-CN">经历</span></a><a href="cv.html"><span class="lang-en" lang="en">CV</span><span class="lang-zh" lang="zh-CN">简历</span></a><a href="contact.html"><span class="lang-en" lang="en">Contact</span><span class="lang-zh" lang="zh-CN">联系</span></a><button class="lang-toggle" type="button" aria-label="切换至中文"><span class="lang-en" lang="en">中文</span><span class="lang-zh" lang="zh-CN">EN</span></button>
     </nav>
   </header>
-  <main class="container subpage">
+  <main id="main-content" class="container subpage">
     <header class="page-header">
       <p class="eyebrow"><span class="lang-en" lang="en">Professional profile</span><span class="lang-zh" lang="zh-CN">职业概览</span></p>
       <h1><span class="lang-en" lang="en">Experience</span><span class="lang-zh" lang="zh-CN">经历</span></h1>
@@ -82,7 +83,9 @@
       <div class="skill-cloud"><span>Financial Modelling</span><span>Quantitative Research</span><span>Python</span><span>Data Analysis</span><span>Operating Dashboards</span><span>Category Analysis</span><span>Inventory-Sales Analysis</span><span>Data Visualisation</span><span>Project Management</span><span>Cross-functional Communication</span></div>
     </section>
   </main>
-  <footer><p><a href="mailto:Kongxin.Wang23@student.xjtlu.edu.cn">Kongxin.Wang23@student.xjtlu.edu.cn</a><span aria-hidden="true"> · </span><a href="https://www.linkedin.com/in/wangkongxin/" target="_blank" rel="noopener noreferrer">LinkedIn</a><span aria-hidden="true"> · </span><a href="https://github.com/SindeyWang" target="_blank" rel="noopener noreferrer">GitHub</a></p><p>© 2026 Kongxin Wang. All Rights Reserved.</p></footer>
+  <footer><p><a href="mailto:Kongxin.Wang23@student.xjtlu.edu.cn">Kongxin.Wang23@student.xjtlu.edu.cn</a><span aria-hidden="true"> · </span><a href="https://www.linkedin.com/in/wangkongxin/" target="_blank" rel="noopener noreferrer">LinkedIn</a><span aria-hidden="true"> · </span><a href="https://github.com/SindeyWang" target="_blank" rel="noopener noreferrer">GitHub</a></p><p>© 2026 Kongxin Wang. All Rights Reserved.</p><p class="footer-settings"><a href="privacy.html"><span class="lang-en" lang="en">Privacy</span><span class="lang-zh" lang="zh-CN">隐私说明</span></a><button type="button" data-cookie-settings><span class="lang-en" lang="en">Cookie settings</span><span class="lang-zh" lang="zh-CN">Cookie 设置</span></button></p></footer>
   <script src="script.js"></script>
+  <script src="analytics-config.js"></script>
+  <script src="consent.js"></script>
 </body>
 </html>
