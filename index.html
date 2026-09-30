@@ -20,10 +20,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://kongxinwang.com/assets/og-kongxin-wang.jpg">
   <meta name="twitter:image:alt" content="Kongxin Wang — Financial Mathematics and Data Analytics">
-  <meta name="theme-color" content="#0B3D91">
+  <meta name="theme-color" content="#123f63">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <script>document.documentElement.classList.add((()=>{try{return localStorage.getItem('kw_lang')==='zh'?'lang-zh':'lang-en'}catch(e){return'lang-en'}})());</script>
+  <script>document.documentElement.classList.add('js');(()=>{let l='en';try{l=localStorage.getItem('kw_lang')==='zh'?'zh':'en'}catch{}const r=document.documentElement;r.classList.toggle('lang-en',l==='en');r.classList.toggle('lang-zh',l==='zh');r.lang=l==='zh'?'zh-CN':'en'})();</script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -50,11 +50,12 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content"><span class="lang-en" lang="en">Skip to content</span><span class="lang-zh" lang="zh-CN">跳至正文</span></a>
   <header class="top-header">
     <a class="logo" href="index.html" aria-label="Kongxin Wang home"><span class="lang-en" lang="en">Kongxin Wang</span><span class="lang-zh" lang="zh-CN">王孔鑫</span></a>
     <button class="nav-toggle" type="button" aria-label="Open navigation" aria-controls="site-navigation" aria-expanded="false">Menu</button>
     <nav class="top-nav" id="site-navigation" aria-label="Primary navigation">
-      <a href="index.html" class="active"><span class="lang-en" lang="en">Home</span><span class="lang-zh" lang="zh-CN">首页</span></a>
+      <a href="index.html" class="active" aria-current="page"><span class="lang-en" lang="en">Home</span><span class="lang-zh" lang="zh-CN">首页</span></a>
       <a href="projects.html"><span class="lang-en" lang="en">Projects</span><span class="lang-zh" lang="zh-CN">项目</span></a>
       <a href="experience.html"><span class="lang-en" lang="en">Experience</span><span class="lang-zh" lang="zh-CN">经历</span></a>
       <a href="cv.html"><span class="lang-en" lang="en">CV</span><span class="lang-zh" lang="zh-CN">简历</span></a>
@@ -62,13 +63,13 @@
       <button class="lang-toggle" type="button" aria-label="切换至中文"><span class="lang-en" lang="en">中文</span><span class="lang-zh" lang="zh-CN">EN</span></button>
     </nav>
   </header>
-  <main>
+  <main id="main-content">
     <section class="hero container" aria-labelledby="hero-name">
       <div class="hero-copy">
         <p class="eyebrow"><span class="lang-en" lang="en">Xi'an Jiaotong-Liverpool University · 2023–2027</span><span class="lang-zh" lang="zh-CN">西交利物浦大学 · 2023–2027</span></p>
         <h1 id="hero-name" class="hero-name"><span class="lang-en" lang="en">Kongxin Wang</span><span class="lang-zh" lang="zh-CN">王孔鑫</span></h1>
         <p class="hero-role"><span class="lang-en" lang="en">Financial Mathematics &amp; Data Analytics</span><span class="lang-zh" lang="zh-CN">金融数学与数据分析</span></p>
-        <p class="lead"><span class="lang-en" lang="en">Financial Mathematics undergraduate at XJTLU, supporting e-commerce, national distribution management and sales operations at Philips (China) Investment Co., Ltd. I use data analysis across e-commerce, healthcare and social innovation.</span><span class="lang-zh" lang="zh-CN">西交利物浦大学金融数学本科生，现于飞利浦（中国）投资有限公司从事电商、全国分销管理与销售运营相关工作，关注数据分析在电商、医疗健康与社会创新中的应用。</span></p>
+        <p class="lead"><span class="lang-en" lang="en">Financial Mathematics undergraduate at XJTLU, supporting e-commerce, national distribution management and sales operations at Philips (China) Investment Co., Ltd.</span><span class="lang-zh" lang="zh-CN">西交利物浦大学金融数学本科生。现于飞利浦（中国）投资有限公司实习，参与电商、全国分销管理与销售运营。</span></p>
         <p class="proof-line"><span class="lang-en" lang="en">Philips (China) Investment Co., Ltd. · Former Pfizer China Intern</span><span class="lang-zh" lang="zh-CN">飞利浦（中国）投资有限公司 · 曾在辉瑞中国实习</span></p>
         <div class="hero-actions">
           <a class="button button-primary" href="projects.html"><span class="lang-en" lang="en">View selected projects</span><span class="lang-zh" lang="zh-CN">查看精选项目</span></a>
@@ -77,21 +78,31 @@
         </div>
       </div>
       <figure class="portrait-card">
-        <img src="assets/kongxin-wang-portrait.jpg" alt="Professional portrait of Kongxin Wang" class="home-image">
+        <img src="assets/portrait-640.webp" srcset="assets/portrait-320.webp 320w, assets/portrait-640.webp 640w, assets/portrait-960.webp 960w" sizes="(max-width: 600px) 210px, (max-width: 850px) 32vw, 380px" alt="Kongxin Wang" class="home-image" width="900" height="1227" fetchpriority="high" decoding="async">
         <figcaption><span class="lang-en" lang="en">Quantitative thinking · Operational context · Social innovation</span><span class="lang-zh" lang="zh-CN">量化思维 · 运营语境 · 社会创新</span></figcaption>
       </figure>
     </section>
 
-    <section class="container section-space" aria-labelledby="capabilities-title">
+
+    <section class="container section-space" aria-labelledby="selected-work-title">
+      <div class="section-intro"><p class="eyebrow"><span class="lang-en" lang="en">01 / Selected work</span><span class="lang-zh" lang="zh-CN">01 / 项目选读</span></p><h2 id="selected-work-title"><span class="lang-en" lang="en">From a question to a clearer decision.</span><span class="lang-zh" lang="zh-CN">从一个问题，走向更清晰的判断。</span></h2></div>
+      <div class="work-index">
+        <a class="work-row" href="projects.html#financial-forecasting"><span class="card-index" aria-hidden="true">01</span><div><h3><span class="lang-en" lang="en">Financial forecasting</span><span class="lang-zh" lang="zh-CN">财务预测</span></h3><p><span class="lang-en" lang="en">Revenue, cash flow and risk in a venture-planning project.</span><span class="lang-zh" lang="zh-CN">创业规划中的收入、现金流与风险。</span></p></div><span class="arrow" aria-hidden="true">↗</span></a>
+        <a class="work-row" href="projects.html#mental-health-outreach"><span class="card-index" aria-hidden="true">02</span><div><h3><span class="lang-en" lang="en">Mental-health outreach</span><span class="lang-zh" lang="zh-CN">心理健康公益传播</span></h3><p><span class="lang-en" lang="en">Audience strategy and phased landing-page conversion.</span><span class="lang-zh" lang="zh-CN">受众策略与分阶段落地页转化方案。</span></p></div><span class="arrow" aria-hidden="true">↗</span></a>
+        <a class="work-row" href="projects.html#measurement-research"><span class="card-index" aria-hidden="true">03</span><div><h3><span class="lang-en" lang="en">HeXie Mindset measurement</span><span class="lang-zh" lang="zh-CN">HeXie Mindset 测量研究</span></h3><p><span class="lang-en" lang="en">From a cognitive construct to a six-item scale.</span><span class="lang-zh" lang="zh-CN">从认知构念到六题项量表。</span></p></div><span class="arrow" aria-hidden="true">↗</span></a>
+      </div>
+      <div class="editorial-note"><p><span class="lang-en" lang="en">A selection of public work. Professional examples are described without internal data or confidential material.</span><span class="lang-zh" lang="zh-CN">仅展示公开工作与非保密说明，不涉及内部数据与材料。</span></p><a class="text-link" href="projects.html"><span class="lang-en" lang="en">Read the project notes →</span><span class="lang-zh" lang="zh-CN">阅读项目说明 →</span></a></div>
+    </section>
+<section class="container section-space" aria-labelledby="capabilities-title">
       <div class="section-intro">
         <p class="eyebrow"><span class="lang-en" lang="en">Capabilities</span><span class="lang-zh" lang="zh-CN">能力方向</span></p>
-        <h2 id="capabilities-title"><span class="lang-en" lang="en">Where analysis meets operational context.</span><span class="lang-zh" lang="zh-CN">在分析能力与真实运营场景之间建立连接。</span></h2>
+        <h2 id="capabilities-title"><span class="lang-en" lang="en">Analysis, in context.</span><span class="lang-zh" lang="zh-CN">让分析走进真实场景。</span></h2>
       </div>
       <div class="capability-grid">
         <article class="capability-card">
           <p class="card-index">01</p>
           <h3><span class="lang-en" lang="en">Quantitative &amp; business analysis</span><span class="lang-zh" lang="zh-CN">量化与商业分析</span></h3>
-          <p><span class="lang-en" lang="en">Financial modelling, forecasting and structured data analysis grounded in Financial Mathematics training.</span><span class="lang-zh" lang="zh-CN">基于金融数学训练，开展财务建模、预测与结构化数据分析。</span></p>
+          <p><span class="lang-en" lang="en">Financial modelling, forecasting and structured data analysis grounded in Financial Mathematics training.</span><span class="lang-zh" lang="zh-CN">以金融数学为基础，开展建模、预测和数据分析。</span></p>
         </article>
         <article class="capability-card">
           <p class="card-index">02</p>
@@ -109,7 +120,7 @@
     <section class="container section-space compact-callout" aria-labelledby="focus-title">
       <div>
         <p class="eyebrow"><span class="lang-en" lang="en">Current focus</span><span class="lang-zh" lang="zh-CN">当前关注</span></p>
-        <h2 id="focus-title"><span class="lang-en" lang="en">Clear evidence, usable analysis and responsible execution.</span><span class="lang-zh" lang="zh-CN">清晰证据、可用分析与负责任的执行。</span></h2>
+        <h2 id="focus-title"><span class="lang-en" lang="en">Clear evidence. Useful analysis.</span><span class="lang-zh" lang="zh-CN">让证据清晰，让分析可用。</span></h2>
       </div>
       <a class="text-link" href="experience.html"><span class="lang-en" lang="en">Explore experience</span><span class="lang-zh" lang="zh-CN">查看经历</span></a>
     </section>
@@ -118,7 +129,9 @@
     <p><span class="lang-en" lang="en">Open to thoughtful conversations on analytics, operations and social innovation.</span><span class="lang-zh" lang="zh-CN">欢迎交流数据分析、运营实践与社会创新。</span></p>
     <p><a href="mailto:Kongxin.Wang23@student.xjtlu.edu.cn">Kongxin.Wang23@student.xjtlu.edu.cn</a><span aria-hidden="true"> · </span><a href="https://www.linkedin.com/in/wangkongxin/" target="_blank" rel="noopener noreferrer">LinkedIn</a><span aria-hidden="true"> · </span><a href="https://github.com/SindeyWang" target="_blank" rel="noopener noreferrer">GitHub</a></p>
     <p>© 2026 Kongxin Wang. All Rights Reserved.</p>
-  </footer>
+  <p class="footer-settings"><a href="privacy.html"><span class="lang-en" lang="en">Privacy</span><span class="lang-zh" lang="zh-CN">隐私说明</span></a><button type="button" data-cookie-settings><span class="lang-en" lang="en">Cookie settings</span><span class="lang-zh" lang="zh-CN">Cookie 设置</span></button></p></footer>
   <script src="script.js"></script>
+  <script src="analytics-config.js"></script>
+  <script src="consent.js"></script>
 </body>
 </html>
