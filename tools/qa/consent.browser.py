@@ -187,7 +187,7 @@ def fallback_no_inert_case(page, context, requests):
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True, executable_path='/usr/bin/chromium-browser', args=['--disable-dev-shm-usage'])
     try:
-        run_case(browser, 'disabled defaults, bilingual dialog, Escape/focus, mobile', default_case)
+        run_case(browser, 'explicit disabled fixture, bilingual dialog, Escape/focus, mobile', default_case, config="window.KW_ANALYTICS={enabled:false,gtmId:''};")
         run_case(browser, 'enabled but missing ID', default_case, config="window.KW_ANALYTICS={enabled:true,gtmId:''};")
         run_case(browser, 'GPC overrides stored grants', signal_case, config=CONFIG, signal='globalPrivacyControl', stored=True)
         run_case(browser, 'DNT overrides stored grants', signal_case, config=CONFIG, signal='doNotTrack', stored=True)

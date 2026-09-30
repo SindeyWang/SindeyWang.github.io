@@ -29,6 +29,7 @@
   const denied = () => ({ analytics: false, marketing: false });
   const config = window.KW_ANALYTICS || {};
   const configured = config.enabled === true && typeof config.gtmId === 'string' && /^GTM-[A-Z0-9]{4,20}$/.test(config.gtmId);
+  const marketingConfigured = config.marketingEnabled !== false;
   let state = denied(), record = null, storageAvailable = true, loaded = false;
   let initialized = false, reloading = false, expiryTimer = null;
   let pageViewSent = false, readDepthSent = false;
@@ -38,6 +39,7 @@
   const translations = {
     en: {
       title: 'Cookie settings', intro: 'Necessary local storage remembers your language and cookie choices. Optional analytics and marketing are off until you choose. You can change or withdraw consent here at any time.',
+      introAnalytics: 'Necessary local storage remembers your language and cookie choices. Optional GA4 analytics is off until you choose. Advertising and marketing tags are not enabled. You can change or withdraw consent here at any time.',
       disabled: 'Analytics and marketing are not enabled on this site. Only necessary language and consent storage is used; no analytics or advertising tag is loaded.',
       forced: 'Your browser privacy signal (Do Not Track or Global Privacy Control) is respected. Analytics and marketing remain off.',
       storage: 'Browser storage is unavailable. Optional tracking stays off because your choice cannot be safely saved.',
@@ -47,6 +49,7 @@
     },
     zh: {
       title: 'Cookie 设置', intro: '必要的本地存储用于记住语言及 Cookie 选择。可选的分析与营销在你选择前均关闭。你可随时在此更改或撤回同意。',
+      introAnalytics: '必要的本地存储用于记住语言及 Cookie 选择。可选 GA4 分析在你选择前保持关闭，广告与营销标签未启用。你可随时在此更改或撤回同意。',
       disabled: '本站尚未启用分析或营销。目前仅使用必要的语言与同意设置存储，不加载分析或广告标签。',
       forced: '已尊重浏览器的隐私信号（Do Not Track 或 Global Privacy Control）。分析与营销保持关闭。',
       storage: '浏览器存储不可用，无法安全保存你的选择，因此可选追踪保持关闭。',
@@ -83,7 +86,7 @@
   }
   function effective(value) {
     return configured && pagePath() && !privacyForced() && storageAvailable && validRecord(value)
-      ? { analytics: value.analytics, marketing: value.marketing } : denied();
+      ? { analytics: value.analytics, marketing: marketingConfigured && value.marketing } : denied();
   }
   function consentValues(value) {
     return {
@@ -94,10 +97,51 @@
       functionality_storage: 'granted', security_storage: 'granted', personalization_storage: 'denied'
     };
   }
+  // Installed BEFORE Google scripts can cache a sender. On revocation the native
+  // runtime may otherwise emit a final denied/cookieless engagement request.
+  let transportGuardInstalled = false;
+  function installAnalyticsTransportGuard() {
+    if (transportGuardInstalled) return true;
+    const block = input => {
+      if (state.analytics && !reloading && !privacyForced() && validRecord(record)) return false;
+      try {
+        const u = new URL(typeof input === 'string' ? input : (input?.url || String(input)), window.location.origin);
+        return /(^|\.)google-analytics\.com$/.test(u.hostname) ||
+          /(^|\.)analytics\.google\.com$/.test(u.hostname) ||
+          (u.hostname === 'www.googletagmanager.com' && u.pathname === '/a') ||
+          (u.hostname === 'www.google.com' && u.pathname === '/ccm/collect');
+      } catch (_) { return false; }
+    };
+    try {
+      if (typeof window.navigator.sendBeacon === 'function') {
+        const original = window.navigator.sendBeacon;
+        window.navigator.sendBeacon = function (url, data) {
+          // Return true after dropping: false would invite a transport fallback.
+          return block(url) ? true : original.call(this, url, data);
+        };
+      }
+      if (typeof window.fetch === 'function') {
+        const original = window.fetch;
+        window.fetch = function (input, init) {
+          if (block(input)) return Promise.resolve(window.Response ? new window.Response(null, {status: 204}) : {ok: true, status: 204});
+          return original.call(this, input, init);
+        };
+      }
+      if (window.XMLHttpRequest) {
+        const proto = window.XMLHttpRequest.prototype, open = proto.open, send = proto.send;
+        const urls = new WeakMap();
+        proto.open = function (method, url) { urls.set(this, url); return open.apply(this, arguments); };
+        proto.send = function () { if (block(urls.get(this))) { this.abort(); return; } return send.apply(this, arguments); };
+      }
+      transportGuardInstalled = true;
+      return true;
+    } catch (_) { return false; } // Fail closed rather than loading an unguarded provider.
+  }
   // Local dataLayer commands are not network requests. Only loadTag creates one.
   function command() { window.dataLayer.push(arguments); }
   function loadTag() {
     if (loaded || reloading || !configured || (!state.analytics && !state.marketing)) return;
+    if (!installAnalyticsTransportGuard()) { state = denied(); return; }
     window.dataLayer = window.dataLayer || [];
     command('consent', 'default', consentValues(denied()));
     command('set', 'ads_data_redaction', true);
@@ -212,11 +256,12 @@
       expiryTimer = window.setTimeout(() => refresh(), Math.min(record.expiresAt - Date.now(), 2147483647));
     }
     if (banner) banner.hidden = !(configured && storageAvailable && !privacyForced() && !validRecord(record));
+    reserveBannerSpace();
   }
   function refresh() { applyRecord(readRecord()); }
   function persist(analytics, marketing) {
     const now = Date.now();
-    const next = { version: VERSION, analytics: analytics === true, marketing: marketing === true, updatedAt: now, expiresAt: now + TTL };
+    const next = { version: VERSION, analytics: analytics === true, marketing: marketingConfigured && marketing === true, updatedAt: now, expiresAt: now + TTL };
     if (!configured || privacyForced()) { applyRecord(null); render(); return; }
     try {
       const text = JSON.stringify(next);
@@ -232,7 +277,7 @@
       render();
     }
   }
-  function text() { return translations[language()]; }
+  function text() { const t = translations[language()]; return marketingConfigured ? t : { ...t, intro: t.introAnalytics }; }
   function explanation() {
     const t = text();
     return !configured ? t.disabled : privacyForced() ? t.forced : !storageAvailable ? t.storage : t.intro;
@@ -283,6 +328,12 @@
     }
     dialogTitle.focus();
   }
+  function reserveBannerSpace() {
+    // A fixed notice must not cover the footer/Cookie settings on first visit.
+    if (!banner || typeof banner.getBoundingClientRect !== 'function') return;
+    const height = banner.hidden ? 0 : banner.getBoundingClientRect().height;
+    document.body.style.paddingBottom = height ? (Math.ceil(height) + 32) + 'px' : '';
+  }
   function render() {
     if (!dialog) return;
     const t = text();
@@ -300,13 +351,14 @@
       banner.setAttribute('aria-label', t.title);
       banner.querySelectorAll('[data-kw-copy]').forEach(el => { el.textContent = t[el.getAttribute('data-kw-copy')]; });
     }
+    reserveBannerSpace();
   }
   function copied(tag, key) {
     const el = element(tag, '', text()[key]); el.setAttribute('data-kw-copy', key); return el;
   }
   function choiceButtons(parent, customize) {
     const reject = button(text().reject, () => persist(false, false)); reject.setAttribute('data-kw-copy', 'reject');
-    const accept = button(text().accept, () => persist(true, true)); accept.setAttribute('data-kw-copy', 'accept');
+    const accept = button(text().accept, () => persist(true, marketingConfigured)); accept.setAttribute('data-kw-copy', 'accept');
     const custom = button(text().customize, customize); custom.setAttribute('data-kw-copy', 'customize');
     parent.append(reject, accept, custom);
   }
@@ -330,7 +382,9 @@
     analyticsInput = element('input'); analyticsInput.type = 'checkbox'; analyticsInput.id = 'kw-cookie-analytics';
     marketingInput = element('input'); marketingInput.type = 'checkbox'; marketingInput.id = 'kw-cookie-marketing';
     [['analytics', analyticsInput], ['marketing', marketingInput]].forEach(([key, input]) => {
-      const label = element('label'); label.append(input, copied('span', key)); categories.appendChild(label);
+      const label = element('label');
+      if (key === 'marketing' && !marketingConfigured) { input.disabled = true; label.hidden = true; }
+      label.append(input, copied('span', key)); categories.appendChild(label);
     });
     categories.appendChild(copied('p', 'necessary'));
     actions = element('div', 'kw-consent-actions');
@@ -361,6 +415,8 @@
       banner.appendChild(bannerActions);
       const link = copied('a', 'privacy'); link.href = 'privacy.html'; banner.appendChild(link);
       document.body.appendChild(banner);
+      if (typeof window.ResizeObserver === 'function') new window.ResizeObserver(reserveBannerSpace).observe(banner);
+      window.addEventListener('resize', reserveBannerSpace);
     }
     refresh(); render();
     document.addEventListener('click', event => {
