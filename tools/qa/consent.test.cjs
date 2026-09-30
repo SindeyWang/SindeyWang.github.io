@@ -80,13 +80,52 @@ function storedConsent(analytics, marketing, overrides = {}) {
   return JSON.stringify({version: 1, analytics, marketing, updatedAt: now, expiresAt: now + 180 * 86400000, ...overrides});
 }
 
-test('unconfigured production defaults are empty and disabled', () => {
+test('production uses the verified real container, analytics only and no unconditional grants', () => {
   const context = vm.createContext({window: {}});
-  const file = path.join(ROOT, 'analytics-config.js');
-  if (fs.existsSync(file)) vm.runInContext(fs.readFileSync(file,'utf8'),context);
-  assert.ok(context.window.KW_ANALYTICS, 'configuration module exists');
-  assert.equal(context.window.KW_ANALYTICS.enabled, false);
-  assert.equal(context.window.KW_ANALYTICS.gtmId, '');
+  vm.runInContext(fs.readFileSync(path.join(ROOT,'analytics-config.js'),'utf8'),context);
+  const cfg=context.window.KW_ANALYTICS;
+  assert.equal(cfg.enabled,true);
+  assert.equal(cfg.gtmId,'GTM-M8PP54JD');
+  assert.equal(cfg.marketingEnabled,false);
+  const h=harness({config:cfg});
+  assert.equal(h.scripts().length,0);
+  assert.equal(h.api.getState().analytics,false);
+  h.click('Accept all');
+  assert.equal(h.api.getState().analytics,true);
+  assert.equal(h.api.getState().marketing,false);
+});
+
+test('analytics-only configuration never grants or exposes unconfigured marketing', () => {
+  const cfg = {enabled:true,gtmId:'GTM-TEST123',marketingEnabled:false};
+  const h = harness({config:cfg});
+  h.click('Accept all');
+  assert.equal(h.api.getState().analytics,true);
+  assert.equal(h.api.getState().marketing,false);
+  assert.equal(JSON.parse(h.storage.get('kw_consent')).marketing,false);
+  h.api.open();
+  const input=h.nodes.find(x=>x.id==='kw-cookie-marketing');
+  assert.ok(input.disabled);
+  assert.ok(input.closest('[hidden]'));
+  const old = harness({config:cfg,stored:storedConsent(false,true)});
+  assert.equal(old.api.getState().marketing,false);
+  assert.equal(old.scripts().length,0);
+});
+
+test('revocation blocks already-loaded Google transport without blocking unrelated requests', async () => {
+  const h=harness({config:{enabled:true,gtmId:'GTM-TEST123',marketingEnabled:false}});
+  const beacons=[],fetches=[];
+  h.window.navigator.sendBeacon=(url)=>{beacons.push(url);return true;};
+  h.window.fetch=async(url)=>{fetches.push(url);return {status:200};};
+  h.click('Accept all');
+  h.window.navigator.sendBeacon('https://www.google-analytics.com/g/collect','allowed');
+  assert.equal(beacons.length,1);
+  h.api.open();h.click('Reject all');
+  assert.equal(h.window.navigator.sendBeacon('https://www.google-analytics.com/g/collect','denied'),true);
+  assert.equal(beacons.length,1,'denied transition must not reach the original sender');
+  const blocked=await h.window.fetch('https://region1.google-analytics.com/g/collect');
+  assert.equal(blocked.status,204);assert.equal(fetches.length,0);
+  await h.window.fetch('/contact.html');assert.equal(fetches.length,1);
+  h.window.navigator.sendBeacon('/health','normal');assert.equal(beacons.length,2);
 });
 
 test('first visit denies everything without loading tracking', () => {
